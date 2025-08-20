@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Forecast App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="container">
+    <h1>Weather Forecast</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" class="weather-form">
+        <label for="user_name">Name:</label>
+        <input type="text" id="user_name" name="user_name" value="{{ user_name|e }}" required>
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" value="{{ city|e }}" required>
+        <button type="submit" name="get_weather">Get Weather</button>
+    </form>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if forecasts %}
+        <h2>Next 5 Forecasts for {{ city|e|capitalize }}</h2>
+        <form method="POST">
+            <input type="hidden" name="user_name" value="{{ user_name|e }}">
+            <input type="hidden" name="city" value="{{ city|e }}">
+            <input type="hidden" name="forecasts_data" value='{{ forecasts|tojson }}'>
+
+            <table class="forecast-table">
+                <thead>
+                    <tr>
+                        <th>Date/Time</th>
+                        <th>Temperature (°C)</th>
+                        <th>Weather</th>
+                        <th>Description</th>
+                        <th>Humidity (%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in forecasts %}
+                    <tr>
+                        <td>{{ item.dt_txt }}</td>
+                        <td>{{ item.main.temp|round(1) }}</td>
+                        <td>
+                            {% if item.weather and item.weather[0].icon %}
+                                <img src="https://openweathermap.org/img/wn/{{ item.weather[0].icon }}.png" alt="{{ item.weather[0].main }}">
+                            {% endif %}
+                            {{ item.weather[0].main }}
+                        </td>
+                        <td>{{ item.weather[0].description|capitalize }}</td>
+                        <td>{{ item.main.humidity }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            <button type="submit" name="save_forecast">Save Forecast</button>
+        </form>
+    {% endif %}
+
+    {% if saved_forecasts %}
+        <h2>Saved Forecasts</h2>
+        <table class="saved-table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>City</th>
+                    <th>Forecast Data</th>
+                    <th>Saved At</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for log in saved_forecasts %}
+                <tr>
+                    <td>{{ log.user_name|e }}</td>
+                    <td>{{ log.city|e }}</td>
+                    <td>
+                        {% for item in log.weather_data %}
+                            {{ item.dt_txt }}: {{ item.main.temp|round(1) }}°C, {{ item.weather[0].description|capitalize }}<br>
+                        {% endfor %}
+                    </td>
+                    <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+</body>
+</html>
