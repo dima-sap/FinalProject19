@@ -175,9 +175,11 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
 
-      # 3️⃣ Install dependencies
+      # 3️⃣ Install dependencies (including gunicorn)
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip install gunicorn
 
       # 4️⃣ Login to Azure via OIDC (no client secret needed)
       - name: Login to Azure via OIDC
@@ -188,10 +190,18 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           allow-no-subscriptions: true
 
-      # 5️⃣ Deploy Flask app to Azure Web App
+      # 5️⃣ Configure startup command for Flask
+      - name: Set startup command
+        run: |
+          az webapp config set \
+            --name ${{ env.AZURE_WEBAPP_NAME }} \
+            --resource-group flask-app-rg \
+            --startup-file "gunicorn --bind 0.0.0.0:8000 app:app"
+
+      # 6️⃣ Deploy Flask app to Azure Web App
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          package: .  # change to ./weather-app if your Flask app is inside a folder
+          package: .
           slot-name: 'Production'
