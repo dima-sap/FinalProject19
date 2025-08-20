@@ -150,8 +150,8 @@ name: Deploy Flask App to Azure
 
 env:
   AZURE_WEBAPP_NAME: flask-weather-app  # replace with your Azure Web App name
+  AZURE_RESOURCE_GROUP: flask-app-rg          # replace with your Azure resource group name
   PYTHON_VERSION: '3.11'
-  RESOURCE_GROUP: flask-app-rg          # replace with your Azure resource group name
 
 on:
   push:
