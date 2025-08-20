@@ -144,7 +144,7 @@
 #         run: az account show
 
 #       # … your deploy steps (az, bicep, terraform, azure/webapps-deploy, etc.) …
-
+#       # deploy
 
 name: Deploy Flask App to Azure
 
