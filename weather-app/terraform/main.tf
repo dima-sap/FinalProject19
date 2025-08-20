@@ -63,7 +63,7 @@ resource "azurerm_app_service" "main" {
   app_settings = {
     FLASK_SECRET_KEY        = var.flask_secret_key
     OPENWEATHER_API_KEY     = var.openweather_api_key
-    DATABASE_URL            = "postgresql://${azurerm_postgresql_flexible_server.main.administrator_login}:${azurerm_postgresql_flexible_server.main.administrator_password}@${azurerm_postgresql_flexible_server.main.fqdn}:5432/${azurerm_postgresql_database.main.name}?sslmode=require"
+    DATABASE_URL            = "postgresql://${azurerm_postgresql_flexible_server.main.administrator_login}:${azurerm_posazurerm_postgresql_database.maintgresql_flexible_server.main.administrator_password}@${azurerm_postgresql_flexible_server.main.fqdn}:5432/${.name}?sslmode=require"
     WEBSITES_PORT           = "8000" # Or the port your Flask app listens on
   }
 
@@ -74,7 +74,7 @@ resource "azurerm_app_service" "main" {
 
   depends_on = [
     azurerm_postgresql_flexible_server.main,
-    azurerm_postgresql_database.main
+    azurerm_postgresql_flexible_server_database.main
   ]
 }
 
