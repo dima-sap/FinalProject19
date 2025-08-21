@@ -1,9 +1,9 @@
 name: Deploy Flask App to Azure
 
 env:
-  AZURE_WEBAPP_NAME: flask-weather-app       # your Azure Web App name
+  AZURE_WEBAPP_NAME: aztek-app-service       # your Azure Web App name
   PYTHON_VERSION: '3.11'                     # Python version
-  AZURE_RESOURCE_GROUP: aztek-app-rg                # your Azure resource group
+  AZURE_RESOURCE_GROUP: aztek-app-rg         # your Azure resource group
 
 on:
   push:
