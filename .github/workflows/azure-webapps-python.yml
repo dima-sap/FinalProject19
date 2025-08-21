@@ -2,8 +2,8 @@ name: Deploy Flask App to Azure
 
 env:
   AZURE_WEBAPP_NAME: aztek-flask-app       # your Azure Web App name
-  PYTHON_VERSION: '3.11'                     # Python version
-  AZURE_RESOURCE_GROUP: aztek-app-rg         # your Azure resource group
+  PYTHON_VERSION: '3.11'                   # Python version
+  AZURE_RESOURCE_GROUP: aztek-app-rg        # your Azure resource group
 
 on:
   push:
@@ -28,11 +28,10 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
 
-      # 3️⃣ Install dependencies (including gunicorn)
+      # 3️⃣ Install dependencies (inside weather-app/)
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          pip install gunicorn
+        run: pip install -r requirements.txt
+        working-directory: ./weather-app
 
       # 4️⃣ Login to Azure via OIDC
       - name: Login to Azure via OIDC
@@ -48,17 +47,17 @@ jobs:
       - name: Test OIDC token
         run: echo "${{ steps.azure_oidc.outputs.token }}"
 
-      # 5️⃣ Configure startup command for Flask
+      # 5️⃣ Configure startup command for Flask (ensure the app runs from weather-app/)
       - name: Set startup command
         run: |
           az webapp config set \
             --name ${{ env.AZURE_WEBAPP_NAME }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-            --startup-file "gunicorn --bind=0.0.0.0 --timeout 600 app:app"
+            --startup-file "cd weather-app && gunicorn --bind=0.0.0.0 --timeout 600 app:app"
 
       # 6️⃣ Deploy Flask app to Azure Web App
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         with:
-          app-name: aztek-flask-app
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
           package: ./weather-app
