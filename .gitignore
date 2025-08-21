@@ -6,10 +6,14 @@ instance/
 *.db
 
 # Terraform
+.terraform/
 *.tfstate
 *.tfstate.*
-.terraform/
-crash.log
+.crash
+*.tfvars
+override.tf
+override.tf.json
+terraform.tfstate.backup
 *.log
 
 # VSCode
