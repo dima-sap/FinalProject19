@@ -5,4 +5,4 @@
 
 ## Azure plan
 
-<img width="794" height="581" alt="image" src="https://github.com/user-attachments/assets/6cd49574-5e6f-4f8b-99fc-45f7db224052" />
+<img width="753" height="652" alt="image" src="https://github.com/user-attachments/assets/be8ca211-84c2-4b4d-a978-a7c48e0ac28b" />
