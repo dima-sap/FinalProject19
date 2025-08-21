@@ -57,9 +57,8 @@ jobs:
             --startup-file "gunicorn --bind=0.0.0.0 --timeout 600 app:app"
 
       # 6️⃣ Deploy Flask app to Azure Web App
-      - name: Deploy to Azure Web App
+      - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          package: .
-          slot-name: ./weather-app
+          app-name: aztek-flask-app
+          package: ./weather-app
