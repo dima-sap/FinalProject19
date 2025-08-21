@@ -31,7 +31,8 @@ jobs:
       # 3️⃣ Install dependencies (inside weather-app/)
       - name: Install dependencies
         run: pip install -r requirements.txt
-        working-directory: ./weather-app
+      - name: Run app
+        run: python app.py
 
       # 4️⃣ Login to Azure via OIDC
       - name: Login to Azure via OIDC
@@ -64,4 +65,4 @@ jobs:
 
 
 
-# testt
+# testtt
