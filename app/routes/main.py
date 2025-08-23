@@ -3,7 +3,7 @@ Main routes for the Weather Forecast App
 Handles the main pages and navigation
 """
 from flask import Blueprint, render_template, current_app, flash, redirect, url_for
-from models import WeatherLog
+from ..models import WeatherLog
 
 main_bp = Blueprint('main', __name__)
 

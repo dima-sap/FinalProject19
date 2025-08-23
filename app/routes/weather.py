@@ -5,8 +5,8 @@ Handles weather fetching and saving operations
 import json
 from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
-from models import WeatherLog, db
-from utils import fetch_weather_data, validate_weather_data
+from ..models import WeatherLog, db
+from ..utils import fetch_weather_data, validate_weather_data
 
 weather_bp = Blueprint('weather', __name__)
 

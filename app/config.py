@@ -9,7 +9,7 @@ load_dotenv()
 
 # Azure PostgreSQL connection helper
 try:
-    from get_conn import get_connection_uri
+    from .get_conn import get_connection_uri
     AZURE_POSTGRES_AVAILABLE = True
 except ImportError:
     AZURE_POSTGRES_AVAILABLE = False

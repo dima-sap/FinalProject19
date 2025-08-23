@@ -3,9 +3,9 @@ Weather Forecast App - Main Application Factory
 """
 import os
 from flask import Flask
-from config import getConfig
-from models import db
-from routes import blueprints
+from .config import getConfig
+from .models import db
+from .routes import blueprints
 
 
 def create_app(config_name=None):

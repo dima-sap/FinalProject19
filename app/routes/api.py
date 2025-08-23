@@ -3,8 +3,8 @@ API routes for the Weather Forecast App
 Handles JSON API endpoints
 """
 from flask import Blueprint, request, jsonify, current_app
-from models import WeatherLog
-from utils import fetch_weather_data
+from ..models import WeatherLog
+from ..utils import fetch_weather_data
 
 api_bp = Blueprint('api', __name__)
 
