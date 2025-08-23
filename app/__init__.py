@@ -3,4 +3,4 @@ Weather Forecast App Package
 """
 from .app import create_app
 
-_all_ = ['create_app']
+__all__ = ['create_app']
