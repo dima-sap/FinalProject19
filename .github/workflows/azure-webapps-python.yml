@@ -55,7 +55,7 @@ jobs:
           az webapp config set \
             --name ${{ env.AZURE_WEBAPP_NAME }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-            --startup-file "gunicorn --bind=0.0.0.0:8000 --timeout 600 --workers 1 wsgi:app"
+            --startup-file "--startup-file "gunicorn --bind=0.0.0.0:8000 --timeout 600 --workers 1 --chdir /home/site/wwwroot wsgi:app""
 
       # 6️⃣ Deploy Flask app to Azure Web App
       - name: 'Deploy to Azure Web App'
