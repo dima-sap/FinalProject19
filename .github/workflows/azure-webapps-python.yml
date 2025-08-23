@@ -30,7 +30,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
 
-      # 3️⃣ Install dependencies (inside weather-app/)
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: pip install -r requirements.txt
      
@@ -49,13 +49,13 @@ jobs:
       - name: Test OIDC token
         run: echo "${{ steps.azure_oidc.outputs.token }}"
 
-      # 5️⃣ Configure startup command for Flask (ensure the app runs from weather-app/)
+      # 5️⃣ Configure startup command for Flask (ensure the app runs fromapp/)
       - name: Set startup command
         run: |
           az webapp config set \
             --name ${{ env.AZURE_WEBAPP_NAME }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-            --startup-file "gunicorn --bind=0.0.0.0 --timeout 600 run:app"
+            --startup-file "gunicorn --bind=0.0.0.0 --timeout 600 app:run"
 
       # 6️⃣ Deploy Flask app to Azure Web App
       - name: 'Deploy to Azure Web App'
