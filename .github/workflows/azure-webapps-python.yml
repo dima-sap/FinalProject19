@@ -53,7 +53,7 @@ jobs:
           az webapp config appsettings set \
             --name ${{ env.AZURE_WEBAPP_NAME }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-            --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true ENABLE_ORYX_BUILD=true DISABLE_COLLECTSTATIC=1
+            --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true ENABLE_ORYX_BUILD=true
 
       # 5️⃣ Deploy Flask app to Azure Web App
       - name: 'Deploy to Azure Web App'
