@@ -1,7 +1,9 @@
 """
 WSGI entry point for Azure App Service
 """
+print("a")
 from app import create_app
+print("b")
 import os
 app = create_app()
 
