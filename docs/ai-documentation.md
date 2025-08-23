@@ -2,8 +2,8 @@
 ## Tools Used
 
 - ChatGPT (GPT-5)
-
 - GitHub Copilot
+- Claude
 
 ## Prompts Used to Develop the Roadmap and Understand the Project Approach (via ChatGPT):
 

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1><i class="fas fa-cloud-sun"></i> Weather Forecast</h1>
+            <p>Get accurate weather forecasts for any city worldwide</p>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }}"></i>
+                            {{ message }}
+                            <button class="alert-close" onclick="this.parentElement.remove()">×</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Weather Form -->
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-search"></i> Get Weather Forecast</h2>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('weather.get_weather') }}" method="POST" class="weather-form">
+                    <div class="form-group">
+                        <label for="user_name"><i class="fas fa-user"></i> Your Name</label>
+                        <input type="text" id="user_name" name="user_name" value="{{ user_name or '' }}" 
+                               placeholder="Enter your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="city"><i class="fas fa-map-marker-alt"></i> City</label>
+                        <input type="text" id="city" name="city" value="{{ city or '' }}" 
+                               placeholder="Enter city name" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-cloud-download"></i> Get Weather
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Current Weather Results -->
+        {% if forecasts %}
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-thermometer-half"></i> 5-Day Weather Forecast for {{ city|e|title }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="forecast-grid">
+                    {% for item in forecasts %}
+                    <div class="forecast-item">
+                        <div class="forecast-date">{{ item.dt_txt[:10] }}</div>
+                        <div class="forecast-icon">
+                            {% if item.weather and item.weather[0].icon %}
+                                <img src="https://openweathermap.org/img/wn/{{ item.weather[0].icon }}@2x.png" 
+                                     alt="{{ item.weather[0].main }}">
+                            {% endif %}
+                        </div>
+                        
+                        {% if item.daily_temps %}
+                        <!-- Enhanced: Show daily temperature range -->
+                        <div class="forecast-temp-range">
+                            <div class="temp-high">{{ item.daily_temps.max|round(1) }}°</div>
+                            <div class="temp-low">{{ item.daily_temps.min|round(1) }}°</div>
+                        </div>
+                        {% else %}
+                        <!-- Fallback: Show single temperature -->
+                        <div class="forecast-temp">{{ item.main.temp|round(1) }}°C</div>
+                        {% endif %}
+                        
+                        <div class="forecast-desc">{{ item.weather[0].description|title }}</div>
+                        <div class="forecast-humidity">
+                            <i class="fas fa-tint"></i> {{ item.main.humidity }}%
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Save Forecast Form -->
+                <form action="{{ url_for('weather.save_forecast') }}" method="POST" class="save-form">
+                    <input type="hidden" name="user_name" value="{{ user_name|e }}">
+                    <input type="hidden" name="city" value="{{ city|e }}">
+                    <input type="hidden" name="forecasts_data" value='{{ forecasts|tojson }}'>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Save This Forecast
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- User's Recent Forecasts -->
+        {% if user_recent_forecasts %}
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-history"></i> Your Recent Forecasts</h2>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>City</th>
+                                <th>Date Saved</th>
+                                <th>Weather Summary</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in user_recent_forecasts %}
+                            <tr>
+                                <td><strong>{{ log.city|title }}</strong></td>
+                                <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    {% set first_item = log.weather_data[0] %}
+                                    {{ first_item.main.temp|round(1) }}°C, {{ first_item.weather[0].description|title }}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('main.user_forecasts', user_name=log.user_name) }}" class="btn btn-sm">
+                                        <i class="fas fa-eye"></i> View All
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Recent Global Activity -->
+        {% if saved_forecasts %}
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-globe"></i> Recent Activity</h2>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>City</th>
+                                <th>Saved At</th>
+                                <th>Weather Summary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in saved_forecasts %}
+                            <tr>
+                                <td>
+                                    <a href="{{ url_for('main.user_forecasts', user_name=log.user_name) }}" class="user-link">
+                                        <i class="fas fa-user-circle"></i> {{ log.user_name }}
+                                    </a>
+                                </td>
+                                <td><strong>{{ log.city|title }}</strong></td>
+                                <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    {% set first_item = log.weather_data[0] %}
+                                    {{ first_item.main.temp|round(1) }}°C, {{ first_item.weather[0].description|title }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p><i class="fas fa-heart text-red"></i> Made with Flask & OpenWeather API</p>
+        </footer>
+    </div>
+
+    <script>
+        // Auto-hide alerts after 5 seconds
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 300);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>
