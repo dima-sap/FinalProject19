@@ -1,9 +1,9 @@
 name: Deploy Flask App to Azure
 
 env:
-  AZURE_WEBAPP_NAME: aztek-flask-app       # your Azure Web App name
+  AZURE_WEBAPP_NAME: aztek-flask-app       # Azure Web App name
   PYTHON_VERSION: '3.11'                   # Python version
-  AZURE_RESOURCE_GROUP: aztek-app-rg        # your Azure resource group
+  AZURE_RESOURCE_GROUP: aztek-app-rg       # Azure resource group
 
 on:
   push:
@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+
     steps:
       # 1️⃣ Checkout repository
       - name: Checkout repo
@@ -43,20 +44,20 @@ jobs:
       # 4️⃣ Configure Azure App Service settings
       - name: Configure App Service
         run: |
-          # Set startup command
+          # Set startup command for Flask (via Gunicorn)
           az webapp config set \
             --name ${{ env.AZURE_WEBAPP_NAME }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
             --startup-file "gunicorn --bind=0.0.0.0:8000 --timeout=600 --workers=1 wsgi:app"
           
-          # Enable build during deployment
+          # Enable Oryx build during deployment
           az webapp config appsettings set \
             --name ${{ env.AZURE_WEBAPP_NAME }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
             --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true ENABLE_ORYX_BUILD=true
 
       # 5️⃣ Deploy Flask app to Azure Web App
-      - name: 'Deploy to Azure Web App'
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
