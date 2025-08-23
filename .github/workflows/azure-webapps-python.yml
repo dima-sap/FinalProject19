@@ -7,7 +7,7 @@ env:
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "dev" ]
 
 permissions:
   id-token: write
@@ -30,12 +30,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
 
-      # 3️⃣ Install dependencies
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-     
-
-      # 4️⃣ Login to Azure via OIDC
+      # 3️⃣ Login to Azure via OIDC
       - name: Login to Azure via OIDC
         uses: azure/login@v2
         id: azure_oidc
@@ -45,11 +40,7 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           allow-no-subscriptions: true
 
-      # 4️⃣a Test OIDC token (optional)
-      - name: Test OIDC token
-        run: echo "${{ steps.azure_oidc.outputs.token }}"
-
-      # 5️⃣ Configure startup command for Flask (ensure the app runs fromapp/)
+      # 4️⃣ Configure Azure App Service settings
       - name: Configure App Service
         run: |
           # Set startup command
@@ -62,13 +53,11 @@ jobs:
           az webapp config appsettings set \
             --name ${{ env.AZURE_WEBAPP_NAME }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-            --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true ENABLE_ORYX_BUILD=true DISABLE_COLLECTSTATIC=1rn --bind=0.0.0.0:8000 --timeout=600 --workers=1 wsgi:app"
+            --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true ENABLE_ORYX_BUILD=true DISABLE_COLLECTSTATIC=1
 
-      # 6️⃣ Deploy Flask app to Azure Web App
+      # 5️⃣ Deploy Flask app to Azure Web App
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           package: .
-
-
