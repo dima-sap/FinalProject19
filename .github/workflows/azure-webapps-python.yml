@@ -55,7 +55,7 @@ jobs:
           az webapp config set \
             --name ${{ env.AZURE_WEBAPP_NAME }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-            --startup-file "cd weather-app && gunicorn --bind=0.0.0.0 --timeout 600 app:app"
+            --startup-file "cd app && gunicorn --bind=0.0.0.0 --port=8000 --timeout 600 app:app"
 
       # 6️⃣ Deploy Flask app to Azure Web App
       - name: 'Deploy to Azure Web App'
