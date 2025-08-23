@@ -50,12 +50,19 @@ jobs:
         run: echo "${{ steps.azure_oidc.outputs.token }}"
 
       # 5️⃣ Configure startup command for Flask (ensure the app runs fromapp/)
-      - name: Set startup command
+      - name: Configure App Service
         run: |
+          # Set startup command
           az webapp config set \
             --name ${{ env.AZURE_WEBAPP_NAME }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
             --startup-file "gunicorn --bind=0.0.0.0:8000 --timeout=600 --workers=1 wsgi:app"
+          
+          # Enable build during deployment
+          az webapp config appsettings set \
+            --name ${{ env.AZURE_WEBAPP_NAME }} \
+            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+            --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true ENABLE_ORYX_BUILD=true DISABLE_COLLECTSTATIC=1rn --bind=0.0.0.0:8000 --timeout=600 --workers=1 wsgi:app"
 
       # 6️⃣ Deploy Flask app to Azure Web App
       - name: 'Deploy to Azure Web App'
