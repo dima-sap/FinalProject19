@@ -1,15 +1,13 @@
 name: Deploy Flask App to Azure
 
 env:
-  AZURE_WEBAPP_NAME: aztek-flask-app       # your Azure Web App name
+  AZURE_WEBAPP_NAME: aztek-flask-app       # Azure Web App name
   PYTHON_VERSION: '3.11'                   # Python version
-  AZURE_RESOURCE_GROUP: aztek-app-rg        # your Azure resource group
+  AZURE_RESOURCE_GROUP: aztek-app-rg       # Azure resource group
 
 on:
   push:
     branches: [ "main" ]
-    paths-ignore:
-      - 'terraform/**'     # Don't deploy app when only terraform changes
 
 permissions:
   id-token: write
@@ -20,19 +18,20 @@ jobs:
     runs-on: ubuntu-latest
     env:
       OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+
     steps:
-      # 1️⃣ Checkout repository
+      # Checkout repository
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # 2️⃣ Set up Python
+      # Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: 'pip'
 
-      # 3️⃣ Login to Azure via OIDC
+      # Login to Azure via OIDC
       - name: Login to Azure via OIDC
         uses: azure/login@v2
         id: azure_oidc
@@ -42,23 +41,23 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           allow-no-subscriptions: true
 
-      # 4️⃣ Configure Azure App Service settings
+      # Configure Azure App Service settings
       - name: Configure App Service
         run: |
-          # Set startup command
+          # Set startup command for Flask (via Gunicorn)
           az webapp config set \
             --name ${{ env.AZURE_WEBAPP_NAME }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
             --startup-file "gunicorn --bind=0.0.0.0:8000 --timeout=600 --workers=1 wsgi:app"
           
-          # Enable build during deployment
+          # Enable Oryx build during deployment
           az webapp config appsettings set \
             --name ${{ env.AZURE_WEBAPP_NAME }} \
             --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-            --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true ENABLE_ORYX_BUILD=true DISABLE_COLLECTSTATIC=1
+            --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true ENABLE_ORYX_BUILD=true
 
-      # 5️⃣ Deploy Flask app to Azure Web App
-      - name: 'Deploy to Azure Web App'
+      # Deploy Flask app to Azure Web App
+      - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
