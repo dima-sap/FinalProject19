@@ -2,7 +2,11 @@
 
 <img width="894" height="722" alt="Screenshot 2025-08-19 105721" src="https://github.com/user-attachments/assets/4cbc6a77-5ecf-43b7-b954-98809844579d" />
 
-A Flask-based weather forecast application with Azure PostgreSQL integration and passwordless authentication.
+A full-stack Flask web application for weather forecasting, featuring a modern user interface, secure passwordless authentication, and seamless integration with Azure PostgreSQL for scalable data storage. The app is cloud-ready, leveraging Azure services and infrastructure-as-code (Terraform) for robust, automated deployment and management.
+
+<img width="1293" height="564" alt="image" src="https://github.com/user-attachments/assets/d4f426d4-1e47-4748-b6ce-caf49ea717cc" />
+
+<img width="1103" height="833" alt="image" src="https://github.com/user-attachments/assets/ad4ccf94-5cd8-4892-8889-cc012bb7971d" />
 
 ## Setup
 
@@ -61,6 +65,41 @@ The application will:
 - Try to connect to Azure PostgreSQL using passwordless authentication
 - Fall back to password-based authentication if needed
 - Fall back to SQLite for development if Azure connection fails
+
+### Installation
+
+```bash
+git clone https://github.com/BarSagiv/aztek-app.git
+cd aztek-app
+# Set up backend (Python)
+pip install -r requirements.txt
+
+# Set up infrastructure (Terraform)
+cd terraform/
+terraform init
+terraform apply
+```
+
+> Adjust these commands as appropriate to your actual project structure.
+
+### Running the App
+
+```bash
+# Example for backend
+python main.py
+
+# Or via Docker (if supported)
+docker compose up
+```
+
+### Environment Variables
+
+Create a `.env` file in the root directory and set the following variables:
+
+```
+EXAMPLE_ENV=your_value
+```
+
 
 ## Architecture
 
