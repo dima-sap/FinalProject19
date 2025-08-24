@@ -100,4 +100,24 @@ Step-by-step summary of what we did in this chat:
 <img width="915" height="237" alt="image" src="https://github.com/user-attachments/assets/3c94cf7a-3b88-4b22-b9e2-a94ea5ee05f2" />
 
 
+<img width="544" height="202" alt="image" src="https://github.com/user-attachments/assets/c003ce78-d6d6-467f-8071-19d09276f226" />
+
+
+## How the Project Evolved: Step-by-Step Overview by GitHub Copilot
+
+1. Initialized a Python web application project structure with clear separation of concerns (app, routes, static, templates).
+2. Set up a virtual environment and managed dependencies using requirements.txt.
+3. Implemented the core application logic in app.py and configured the app with config.py.
+4. Created database models in models.py and set up a local SQLite database for development.
+5. Developed utility functions in utils.py and connection helpers in get_conn.py.
+6. Organized API endpoints and main routes in the routes/ directory for modularity.
+7. Built user-facing HTML templates in the templates/ folder and styled them with static/style.css.
+8. Added a WSGI entry point (wsgi.py) to support deployment on production servers.
+9. Documented the architecture and AI-related features in the docs directory.
+10. Integrated infrastructure as code using Terraform scripts in the terraform folder.
+11. Configured Azure Front Door and other cloud resources via Terraform for scalable deployment.
+12. Managed environment-specific settings and local database files in the instance/ directory.
+13. Maintained a clear and informative README.md for onboarding and usage instructions.
+14. Used Git for version control and pushed changes to a remote repository.
+16. Iteratively tested, debugged, and improved the application and infrastructure based on feedback and requirements.
 
