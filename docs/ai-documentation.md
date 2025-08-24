@@ -121,3 +121,6 @@ Step-by-step summary of what we did in this chat:
 14. Used Git for version control and pushed changes to a remote repository.
 16. Iteratively tested, debugged, and improved the application and infrastructure based on feedback and requirements.
 
+## Order of flow
+
+<img width="332" height="733" alt="image" src="https://github.com/user-attachments/assets/5c348681-5152-478a-8027-e8d1cb7533c1" />
