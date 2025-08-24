@@ -124,3 +124,6 @@ Step-by-step summary of what we did in this chat:
 ## Order of flow
 
 <img width="332" height="733" alt="image" src="https://github.com/user-attachments/assets/5c348681-5152-478a-8027-e8d1cb7533c1" />
+
+<img width="907" height="387" alt="image" src="https://github.com/user-attachments/assets/04877f9e-53f6-4c82-b6ca-8d2f9db943c7" />
+
